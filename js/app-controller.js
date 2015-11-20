@@ -62,7 +62,69 @@ app.controller('AppController', function ($scope) {
         if (isdigit(tree.name)) {
             $scope.result = tree.name;
         }
+        else {
+            $scope.result = $scope.recursiveState(tree) + " = " + $scope.recursiveCalc(tree);
+        }
     }
+
+    $scope.recursiveState = function (tree) {
+        var str = "";
+        if (tree.right) {
+            if (isdigit(tree.right.name)) {
+                str += tree.right.name + " " + tree.name;
+            }
+            else {
+                str += "(" + $scope.recursiveState(tree.right) + ") " + tree.name;
+            }
+        }
+        if (tree.left) {
+            if (isdigit(tree.left.name)) {
+                str += " " + tree.left.name;
+            }
+            else {
+                str += " (" + $scope.recursiveState(tree.left) + ")";
+            }
+        }
+        return str;
+    }
+
+    $scope.recursiveCalc = function (tree) {
+        var result = 0;
+        var right = 0;
+        var left = 0;
+
+        if (tree.right) {
+            if (isdigit(tree.right.name)) {
+                right = parseInt(tree.right.name);
+            }
+            else {
+                right = $scope.recursiveCalc(tree.right);
+            }
+        }
+        if (tree.left) {
+            if (isdigit(tree.left.name)) {
+                left = parseInt(tree.left.name);
+            }
+            else {
+                left = $scope.recursiveCalc(tree.left);
+            }
+        }
+        if(tree.name === '+') {
+            result = right + left;
+        }
+        else if (tree.name === '-') {
+            result = right - left;
+        }
+        else if (tree.name === '*') {
+            result = right * left;
+        }
+        else if (tree.name === '/') {
+            result = right / left;;
+        }
+
+        return result;
+    }
+
 
     $scope.expand = function (tree) {
         if (tree.expand) {
